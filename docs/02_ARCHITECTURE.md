@@ -70,11 +70,18 @@ Package manager: npm workspaces. Language: TypeScript in `strict` mode everywher
 
 ### 3.1 Directory tree
 
-This tree is the Phase 2 scaffold contract. Phase 1 creates the `docs/` files only.
+This tree is the Phase 2 scaffold contract. Phase 1 creates `docs/` and the always-on agent rules.
 
 ```
 dynamic-crm/
-├── .cursorrules                    # agent rules in section 12
+├── AGENTS.md                       # always-on rules for Antigravity and other agents
+├── .cursorrules                    # same rules, for agents that read only this file
+├── .cursor/rules/                  # Cursor rules, alwaysApply
+│   ├── architecture.mdc
+│   └── design-system.mdc
+├── .agents/rules/                  # Antigravity rules, trigger always_on
+│   ├── architecture.md
+│   └── design-system.md
 ├── .editorconfig
 ├── .gitignore
 ├── package.json                    # private, workspaces: packages/*
@@ -88,7 +95,9 @@ dynamic-crm/
 │   ├── 01_PRD.md
 │   ├── 02_ARCHITECTURE.md
 │   ├── 03_DATABASE_SCHEMA.md
-│   └── 04_DYNAMIC_ENGINE.md
+│   ├── 04_DYNAMIC_ENGINE.md
+│   ├── 05_DESIGN_SYSTEM.md
+│   └── agent-rules/                # source text copied into the rule files above
 └── packages/
     ├── shared-types/
     │   ├── package.json            # name: @dynamic-crm/shared-types
@@ -717,44 +726,16 @@ A step that needs a column that is not in the schema document stops and updates 
 
 ## 12. Repository agent rules
 
-Phase 2 copies the following into `.cursorrules` at the repository root. It is the working agreement for later changes.
+Every task in this repository is bound by the always-on rules, not by an agent's default stack:
 
-```
-Dynamic CRM agent rules
+| Tool | Files | Activation |
+| --- | --- | --- |
+| Cursor | `.cursor/rules/architecture.mdc`, `.cursor/rules/design-system.mdc` | `alwaysApply: true` |
+| Cursor and other agents that read a root file | `.cursorrules` | loaded for the workspace |
+| Antigravity | `.agents/rules/architecture.md`, `.agents/rules/design-system.md` | `trigger: always_on` |
+| Antigravity and other agents | `AGENTS.md` | always on for the repository |
 
-Read docs/01_PRD.md, docs/02_ARCHITECTURE.md, docs/03_DATABASE_SCHEMA.md,
-and docs/04_DYNAMIC_ENGINE.md before changing behavior.
-
-Tenancy
-- Take tenant id from request context. Never from the body or query string.
-- Open tenant SQL only inside withTenant. Use the PoolClient you are given.
-- set_config third argument is always true.
-- Client viewers are filtered by customer id in the repository as well as by RLS.
-- New cross-tenant SQL is a SECURITY DEFINER function on the schema allowlist.
-
-Data
-- Parameterized SQL only. No string concatenation of values.
-- Money on relational columns is integer minor units.
-- Status values are status keys looked up for the tenant, not new Postgres enums.
-- Custom attributes are validated with compileCustomAttributesSchema on the merged object.
-- Mutating services write audit_logs in the same transaction.
-- Do not add a column the schema document does not describe. Update the document first.
-
-API
-- Throw AppError with a stable code. Do not send stacks or SQL to the client.
-- Zod .strict() on request bodies.
-- Permission checks use @dynamic-crm/shared-types. A new route updates the matrix and the PRD table together.
-
-Frontend
-- Standalone components, OnPush, signals for state.
-- Reactive forms for inputs. The dynamic form factory is the only custom-field renderer.
-- Do not introduce a new global state library.
-- The access token stays in memory.
-
-Scope
-- Stay inside the phase described in the PRD out-of-scope list.
-- Do not add Redis, Kafka, or a second database for the Phase 2 envelope.
-```
+The source text is `docs/agent-rules/architecture.md` and `docs/agent-rules/design-system.md`. The color tokens those rules enforce are specified in `docs/05_DESIGN_SYSTEM.md`. An edit updates the source and the installed copies in the same change. The rules tell the agent to follow this specification when a task asks for a different framework, palette, or data boundary.
 
 ## 13. Failure behavior
 

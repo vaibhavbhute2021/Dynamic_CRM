@@ -519,7 +519,7 @@ export class DynamicFormComponent {
 }
 ```
 
-The template groups sections in definition order and lays fields out on a 1-column grid that becomes 2 columns from the `md` breakpoint. `width: "full"` spans both columns. This is the per-tenant layout from FR-DYN-03. Two tenants with different `layout.section` values render different headings without a code change.
+The template groups sections in definition order and lays fields out on a 1-column grid that becomes 2 columns from the `md` breakpoint. `width: "full"` spans both columns. This is the per-tenant layout from FR-DYN-03. Two tenants with different `layout.section` values render different headings without a code change. Every class in the template is from [05_DESIGN_SYSTEM.md](05_DESIGN_SYSTEM.md). A new control uses that document's input, error, and help classes and does not introduce another color.
 
 ```html
 <div [formGroup]="group()" class="space-y-8">

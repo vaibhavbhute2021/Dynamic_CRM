@@ -11,3 +11,5 @@ Phase 1 is the engineering blueprint in [`docs/`](docs/README.md). Start with [d
 | [Database schema](docs/03_DATABASE_SCHEMA.md) | PostgreSQL DDL, indexes, row-level security |
 | [Migrations](docs/sql/001_core.sql) | Executable schema applied by `psql -f` |
 | [Dynamic engine](docs/04_DYNAMIC_ENGINE.md) | Custom fields, Zod, Angular forms, JSONB queries |
+| [Color scheme](docs/05_DESIGN_SYSTEM.md) | The only palette, chart colors, and app shell |
+| [Agent rules](AGENTS.md) | Always-on rules for Cursor and Antigravity |
